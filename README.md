@@ -3,7 +3,10 @@
 > AI Coding Skills 可视化仪表盘 — 让 AI Agent 理解技能关系、追踪项目阶段、推荐下一步行动。
 
 [![npm](https://img.shields.io/npm/v/@agent-skills/core)](https://www.npmjs.com/package/@agent-skills/core)
+[![npm](https://img.shields.io/npm/v/@agent-skills/react)](https://www.npmjs.com/package/@agent-skills/react)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![CI](https://github.com/wensonlu/agent-skills-dashboard/actions/workflows/ci.yml/badge.svg)](https://github.com/wensonlu/agent-skills-dashboard/actions/workflows/ci.yml)
+[![Release](https://github.com/wensonlu/agent-skills-dashboard/actions/workflows/release.yml/badge.svg)](https://github.com/wensonlu/agent-skills-dashboard/actions/workflows/release.yml)
 
 ## 核心定位
 
