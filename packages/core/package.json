@@ -1,6 +1,7 @@
 {
   "name": "@wenson1234/core",
   "version": "0.1.0",
+  "private": false,
   "description": "TypeScript data parsing layer for Agent Skills graph",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",

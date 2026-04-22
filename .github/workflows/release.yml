@@ -37,7 +37,7 @@ jobs:
           echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
 
       - name: Claim npm scope
-        run: npm access grant read-write-all @agent-skills 2>/dev/null || true
+        run: npm access grant read-write-all @wenson1234 2>/dev/null || true
 
       - name: Publish packages
         run: |

@@ -1,6 +1,7 @@
 {
   "name": "@wenson1234/react",
   "version": "0.1.0",
+  "private": false,
   "description": "React components for Agent Skills visualization",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
