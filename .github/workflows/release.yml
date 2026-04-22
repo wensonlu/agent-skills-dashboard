@@ -36,13 +36,18 @@ jobs:
         run: |
           echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
 
-      - name: Claim npm scope
-        run: npm access grant read-write-all @agent-skills-dashboard 2>/dev/null || true
+      - name: Check npm access
+        run: npm access list && npm whoami
 
-      - name: Publish packages
+      - name: Publish @agent-skills-dashboard/core
         run: |
-          cd packages/core && npm publish --access public
-          cd ../react && npm publish --access public
+          cd packages/core
+          npm publish --access public
+
+      - name: Publish @agent-skills-dashboard/react
+        run: |
+          cd packages/react
+          npm publish --access public
 
       - name: Create GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
