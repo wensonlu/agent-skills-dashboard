@@ -1,6 +1,6 @@
 {
   "name": "agent-skills-dashboard",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "private": true,
   "description": "Organize SKILL.md files into phase, dependency, and recommendation skill graphs for AI agents and React dashboards.",
   "scripts": {

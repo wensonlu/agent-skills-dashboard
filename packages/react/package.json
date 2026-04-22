@@ -1,6 +1,6 @@
 {
   "name": "@agent-skills-dashboard/react",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "private": false,
   "description": "React components for visualizing SKILL.md skill graphs, project phases, and next-step recommendations.",
   "keywords": [
