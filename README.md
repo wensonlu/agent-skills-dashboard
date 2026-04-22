@@ -12,6 +12,8 @@
 
 Agent Skills Dashboard 是一个面向 AI Coding 工作流的 npm 包集合。它可以读取一组 `SKILL.md` 文件，解析出技能名称、阶段、依赖关系和触发关键词，再把这些技能组织成可查询、可推荐、可视化的技能图谱。
 
+这个项目的作用和意义：它把 `SKILL.md` 这类 Agent 技能文件组织成“阶段 + 依赖 + 推荐”的技能图谱。对 AI Agent 来说，它像一个开发流程导航器；对人来说，React 组件可以把技能关系、当前项目阶段、下一步推荐可视化出来。
+
 你可以用它做两类事情：
 
 - 在脚本或 AI Agent 里使用 `@agent-skills-dashboard/core`，根据当前开发阶段推荐下一步技能。
@@ -183,6 +185,38 @@ pnpm test
 
 # 监听模式开发
 pnpm dev
+```
+
+### AI 安装和 demo 预览说明
+
+给 AI Agent 或自动化脚本使用时，推荐用下面的非交互命令，避免全局修改 npm registry。
+
+安装并启动当前仓库的 React demo：
+
+```bash
+# 使用淘宝 npm 镜像源临时安装依赖
+CI=true pnpm install --no-frozen-lockfile --registry=https://registry.npmmirror.com
+
+# 启动 React 组件 demo
+pnpm demo
+```
+
+也可以直接运行脚本：
+
+```bash
+sh scripts/run-demo.sh
+```
+
+启动后打开 `http://127.0.0.1:5173/`。这个 demo 会直接使用 `@agent-skills-dashboard/core` 和 `@agent-skills-dashboard/react`，展示技能关系图、项目阶段追踪、任务匹配和下一步推荐。
+
+在其它项目中安装 npm 包：
+
+```bash
+# 只给 AI Agent 使用数据解析和推荐能力
+npm install @agent-skills-dashboard/core --registry=https://registry.npmmirror.com
+
+# 在 React 应用中展示可视化组件
+npm install @agent-skills-dashboard/core @agent-skills-dashboard/react --registry=https://registry.npmmirror.com
 ```
 
 ## 设计原则

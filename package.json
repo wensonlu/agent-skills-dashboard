@@ -2,7 +2,7 @@
   "name": "agent-skills-dashboard",
   "version": "0.1.8",
   "private": true,
-  "description": "AI Coding Skills Visualization Dashboard - AI Agent oriented monorepo",
+  "description": "Organize SKILL.md files into phase, dependency, and recommendation skill graphs for AI agents and React dashboards.",
   "scripts": {
     "build": "pnpm -r build",
     "build:demo": "pnpm tsx scripts/generate-demo-data.ts",

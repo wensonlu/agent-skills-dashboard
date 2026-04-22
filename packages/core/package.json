@@ -2,7 +2,7 @@
   "name": "@agent-skills-dashboard/core",
   "version": "0.1.8",
   "private": false,
-  "description": "Parse SKILL.md files into an Agent Skills graph and recommend next-step skills for AI coding workflows.",
+  "description": "Organize SKILL.md files into phase, dependency, and recommendation skill graphs for AI agent coding workflows.",
   "keywords": [
     "agent-skills",
     "ai-coding",
