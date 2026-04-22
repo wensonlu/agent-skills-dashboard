@@ -29,7 +29,7 @@ importers:
 
   packages/react:
     dependencies:
-      '@agent-skills-dashboard/core':
+      '@wenson123/core':
         specifier: workspace:*
         version: link:../core
       d3:
