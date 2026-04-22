@@ -1,5 +1,5 @@
 import React from 'react';
-import type { SkillNode } from '@agent-skills/core';
+import type { SkillNode } from '@wenson1234/core';
 
 interface SkillCardProps {
   skill: SkillNode | null;

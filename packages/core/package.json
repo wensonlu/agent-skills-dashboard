@@ -1,5 +1,5 @@
 {
-  "name": "@agent-skills/core",
+  "name": "@wenson1234/core",
   "version": "0.1.0",
   "description": "TypeScript data parsing layer for Agent Skills graph",
   "main": "./dist/index.js",

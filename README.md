@@ -2,8 +2,8 @@
 
 > AI Coding Skills 可视化仪表盘 — 让 AI Agent 理解技能关系、追踪项目阶段、推荐下一步行动。
 
-[![npm](https://img.shields.io/npm/v/@agent-skills/core)](https://www.npmjs.com/package/@agent-skills/core)
-[![npm](https://img.shields.io/npm/v/@agent-skills/react)](https://www.npmjs.com/package/@agent-skills/react)
+[![npm](https://img.shields.io/npm/v/@wenson1234/core)](https://www.npmjs.com/package/@wenson1234/core)
+[![npm](https://img.shields.io/npm/v/@wenson1234/react)](https://www.npmjs.com/package/@wenson1234/react)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![CI](https://github.com/wensonlu/agent-skills-dashboard/actions/workflows/ci.yml/badge.svg)](https://github.com/wensonlu/agent-skills-dashboard/actions/workflows/ci.yml)
 [![Release](https://github.com/wensonlu/agent-skills-dashboard/actions/workflows/release.yml/badge.svg)](https://github.com/wensonlu/agent-skills-dashboard/actions/workflows/release.yml)
@@ -12,17 +12,17 @@
 
 本项目是给 **AI Agent 用的技能导航系统**：
 
-- **`@agent-skills/core`** — TypeScript 纯数据解析包，无 UI 依赖，AI 通过 `import` 使用
-- **`@agent-skills/react`** — React 可视化组件包，人类通过浏览器预览技能关系图和项目状态
+- **`@wenson1234/core`** — TypeScript 纯数据解析包，无 UI 依赖，AI 通过 `import` 使用
+- **`@wenson1234/react`** — React 可视化组件包，人类通过浏览器预览技能关系图和项目状态
 
 ## 安装
 
 ```bash
 # 使用 pnpm（推荐）
-pnpm add @agent-skills/core @agent-skills/react
+pnpm add @wenson1234/core @wenson1234/react
 
 # 或使用 npm
-npm install @agent-skills/core @agent-skills/react
+npm install @wenson1234/core @wenson1234/react
 ```
 
 ## 快速开始
@@ -30,7 +30,7 @@ npm install @agent-skills/core @agent-skills/react
 ### AI Agent 用法（core 包）
 
 ```typescript
-import { createSkillGraph, findForPhase, recommendNext } from '@agent-skills/core';
+import { createSkillGraph, findForPhase, recommendNext } from '@wenson1234/core';
 
 // 初始化技能图谱
 const graph = await createSkillGraph('/path/to/agent-skills/skills');
@@ -47,8 +47,8 @@ const recs = recommendNext(graph, 'define', '我要开始一个新项目');
 ### React 组件用法
 
 ```tsx
-import { SkillMap, ProjectTracker, SkillCard } from '@agent-skills/react';
-import '@agent-skills/react/styles';  // 引入样式
+import { SkillMap, ProjectTracker, SkillCard } from '@wenson1234/react';
+import '@wenson1234/react/styles';  // 引入样式
 
 // 技能关系图
 <SkillMap

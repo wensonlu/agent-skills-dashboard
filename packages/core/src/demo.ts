@@ -1,5 +1,5 @@
 /**
- * @agent-skills/core 使用示例
+ * @wenson1234/core 使用示例
  *
  * 运行方式:
  *   npx tsx src/demo.ts
