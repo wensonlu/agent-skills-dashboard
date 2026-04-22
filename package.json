@@ -6,6 +6,7 @@
   "scripts": {
     "build": "pnpm -r build",
     "build:demo": "pnpm tsx scripts/generate-demo-data.ts",
+    "demo": "pnpm --filter agent-skills-dashboard-demo dev",
     "test": "pnpm -r test",
     "dev": "pnpm -r --parallel dev"
   },
