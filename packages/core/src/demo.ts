@@ -1,5 +1,5 @@
 /**
- * @luwenchun1/core 使用示例
+ * @agent-skills-dashboard/core 使用示例
  *
  * 运行方式:
  *   npx tsx src/demo.ts

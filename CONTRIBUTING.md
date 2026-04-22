@@ -37,7 +37,7 @@ git push origin v0.1.0
 The `release.yml` workflow will:
 - Run tests
 - Build both packages
-- Publish to npm (`@luwenchun1/core` then `@luwenchun1/react`)
+- Publish to npm (`@agent-skills-dashboard/core` then `@agent-skills-dashboard/react`)
 - Create GitHub Release
 
 ### Manual npm publish (if needed)

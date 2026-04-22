@@ -1,5 +1,5 @@
 import React from 'react';
-import type { SkillGraph, ProjectState, SkillPhase } from '@luwenchun1/core';
+import type { SkillGraph, ProjectState, SkillPhase } from '@agent-skills-dashboard/core';
 
 interface ProjectTrackerProps {
   project: ProjectState;

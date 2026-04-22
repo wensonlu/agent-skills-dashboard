@@ -40,12 +40,12 @@ jobs:
       - name: Verify npm access
         run: npm whoami
 
-      - name: Publish @luwenchun1/core
+      - name: Publish @agent-skills-dashboard/core
         run: |
           cd packages/core
           npm publish --access public
 
-      - name: Publish @luwenchun1/react
+      - name: Publish @agent-skills-dashboard/react
         run: |
           cd packages/react
           npm publish --access public
