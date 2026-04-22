@@ -10,8 +10,9 @@ import {
 } from '../src/graph';
 import { createSkillGraph } from '../src/index';
 import type { ProjectState } from '../src/types';
+import { resolve } from 'path';
 
-const SKILLS_PATH = '/root/.openclaw/workspace/agent-skills/skills';
+const SKILLS_PATH = resolve(__dirname, 'fixtures/skills');
 
 describe('graph API', () => {
   let graph: Awaited<ReturnType<typeof createSkillGraph>>;
@@ -42,8 +43,9 @@ describe('graph API', () => {
       expect(results.length).toBeGreaterThan(0);
     });
 
-    it('should find skills related to security', () => {
-      const results = findForTask(graph, 'security');
+    it('should find skills related to review', () => {
+      // code-review-and-quality is in fixture
+      const results = findForTask(graph, 'review');
       expect(results.length).toBeGreaterThan(0);
     });
 

@@ -1,8 +1,9 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { parseSkillsDir } from '../src/parser';
 import { createSkillGraph } from '../src/index';
+import { resolve } from 'path';
 
-const SKILLS_PATH = '/root/.openclaw/workspace/agent-skills/skills';
+const SKILLS_PATH = resolve(__dirname, 'fixtures/skills');
 
 describe('parser', () => {
   let graph: Awaited<ReturnType<typeof parseSkillsDir>>;
@@ -79,11 +80,12 @@ describe('graph queries', () => {
 
   describe('findForTask', () => {
     it('should find skills by keyword in name', () => {
+      // test-driven-development is in fixture
       const results = graph.nodes.filter(n =>
-        n.name.toLowerCase().includes('api')
+        n.name.toLowerCase().includes('test')
       );
       expect(results.length).toBeGreaterThan(0);
-      expect(results.some(n => n.id === 'api-and-interface-design')).toBe(true);
+      expect(results.some(n => n.id === 'test-driven-development')).toBe(true);
     });
 
     it('should find skills by keyword in description', () => {
@@ -105,10 +107,10 @@ describe('graph queries', () => {
     });
 
     it('should find skills by partial name match', () => {
-      // api-and-interface-design contains 'api' in id
-      const api = graph.nodes.find(n => n.id === 'api-and-interface-design');
-      expect(api).toBeDefined();
-      expect(api?.name.toLowerCase()).toContain('api');
+      // test-driven-development contains 'test' in id
+      const test = graph.nodes.find(n => n.id === 'test-driven-development');
+      expect(test).toBeDefined();
+      expect(test?.name.toLowerCase()).toContain('test');
     });
   });
 
