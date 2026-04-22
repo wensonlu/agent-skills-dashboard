@@ -25,14 +25,17 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build core package first
+        run: cd packages/core && pnpm build
+
+      - name: Build react package
+        run: cd packages/react && pnpm build
+
       - name: TypeScript check
         run: pnpm -r exec tsc --noEmit
 
       - name: Run tests
         run: pnpm test
-
-      - name: Build
-        run: pnpm build
 
       - name: Build demo page
         run: pnpm tsx scripts/generate-demo-data.ts
