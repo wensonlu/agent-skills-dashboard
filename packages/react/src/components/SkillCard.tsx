@@ -1,5 +1,5 @@
 import React from 'react';
-import type { SkillNode } from '@wenson123/core';
+import type { SkillNode } from '@luwenchun1/core';
 
 interface SkillCardProps {
   skill: SkillNode | null;

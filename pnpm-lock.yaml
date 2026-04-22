@@ -29,7 +29,7 @@ importers:
 
   packages/react:
     dependencies:
-      '@wenson123/core':
+      '@luwenchun1/core':
         specifier: workspace:*
         version: link:../core
       d3:

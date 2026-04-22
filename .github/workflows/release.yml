@@ -37,12 +37,12 @@ jobs:
       - name: Verify npm access
         run: npm whoami
 
-      - name: Publish @wenson123/core
+      - name: Publish @luwenchun1/core
         run: |
           cd packages/core
           npm publish --access public
 
-      - name: Publish @wenson123/react
+      - name: Publish @luwenchun1/react
         run: |
           cd packages/react
           npm publish --access public

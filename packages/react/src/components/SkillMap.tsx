@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-import type { SkillGraph, SkillNode, SkillPhase } from '@wenson123/core';
+import type { SkillGraph, SkillNode, SkillPhase } from '@luwenchun1/core';
 
 interface SkillMapProps {
   graph: SkillGraph;
