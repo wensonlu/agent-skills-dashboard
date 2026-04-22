@@ -22,14 +22,14 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install pnpm
-        run: npm install -g pnpm@9
+      - name: Setup pnpm
+        run: corepack enable && corepack prepare pnpm@9 --activate
 
       - name: Install dependencies
-        run: npm exec -- pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Generate demo data
-        run: npm exec -- pnpm tsx scripts/generate-demo-data.ts
+        run: pnpm tsx scripts/generate-demo-data.ts
 
       - name: Setup Pages
         uses: actions/configure-pages@v4

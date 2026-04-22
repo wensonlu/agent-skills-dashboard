@@ -19,23 +19,23 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install pnpm
-        run: npm install -g pnpm@9
+      - name: Setup pnpm
+        run: corepack enable && corepack prepare pnpm@9 --activate
 
       - name: Install dependencies
-        run: npm exec -- pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Build core package
-        run: npm exec -- pnpm --filter @agent-skills/core build
+        run: pnpm --filter @agent-skills/core build
 
       - name: Build react package
-        run: npm exec -- pnpm --filter @agent-skills/react build
+        run: pnpm --filter @agent-skills/react build
 
       - name: TypeScript check
-        run: npm exec -- pnpm -r exec tsc --noEmit || true
+        run: pnpm -r exec tsc --noEmit || true
 
       - name: Run tests
-        run: npm exec -- pnpm test
+        run: pnpm test
 
       - name: Build demo page
-        run: npm exec -- pnpm tsx scripts/generate-demo-data.ts
+        run: pnpm tsx scripts/generate-demo-data.ts
