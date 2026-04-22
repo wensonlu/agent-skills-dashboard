@@ -22,8 +22,12 @@
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
   },
+  "dependencies": {
+    "@agent-skills/core": "workspace:*"
+  },
   "devDependencies": {
     "@types/react": "^18.2.0",
+    "@agent-skills/core": "workspace:*",
     "tsup": "^8.0.0",
     "typescript": "^5.4.0",
     "vitest": "^1.0.0"
