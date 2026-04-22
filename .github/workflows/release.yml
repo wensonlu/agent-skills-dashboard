@@ -37,7 +37,7 @@ jobs:
           echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
 
       - name: Check npm access
-        run: npm access list && npm whoami
+        run: npm whoami && npm access list @agent-skills-dashboard
 
       - name: Publish @agent-skills-dashboard/core
         run: |
