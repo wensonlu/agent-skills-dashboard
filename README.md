@@ -2,105 +2,131 @@
 
 > AI Coding Skills 可视化仪表盘 — 让 AI Agent 理解技能关系、追踪项目阶段、推荐下一步行动。
 
+[![npm](https://img.shields.io/npm/v/@agent-skills/core)](https://www.npmjs.com/package/@agent-skills/core)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 ## 核心定位
 
-`@agent-skills/core` 是一个 TypeScript 数据解析包，无 UI 依赖，专门给 AI Agent 使用：
+本项目是给 **AI Agent 用的技能导航系统**：
 
-```typescript
-import { createSkillGraph } from '@agent-skills/core';
-
-const graph = await createSkillGraph('/path/to/skills/');
-
-// 查找 Build 阶段技能
-const buildSkills = graph.nodes.filter(n => n.phase === 'build');
-
-// 根据任务推荐技能
-const recs = recommendNext(graph, 'define', '我需要一个 API 设计');
-```
-
-`@agent-skills/react` 是 React 组件包，提供开箱即用的可视化界面。
-
-## 包结构
-
-```
-agent-skills-dashboard/
-├── packages/
-│   ├── core/          # TypeScript 数据层
-│   └── react/         # React 组件层
-├── pnpm-workspace.yaml
-└── package.json
-```
+- **`@agent-skills/core`** — TypeScript 纯数据解析包，无 UI 依赖，AI 通过 `import` 使用
+- **`@agent-skills/react`** — React 可视化组件包，人类通过浏览器预览技能关系图和项目状态
 
 ## 安装
 
 ```bash
-# 安装全部包
-pnpm install
+# 使用 pnpm（推荐）
+pnpm add @agent-skills/core @agent-skills/react
 
-# 或单独安装 core
-pnpm add @agent-skills/core
+# 或使用 npm
+npm install @agent-skills/core @agent-skills/react
 ```
 
-## 使用示例
+## 快速开始
 
 ### AI Agent 用法（core 包）
 
 ```typescript
 import { createSkillGraph, findForPhase, recommendNext } from '@agent-skills/core';
 
-// 初始化
+// 初始化技能图谱
 const graph = await createSkillGraph('/path/to/agent-skills/skills');
 
-// 查询 Build 阶段技能
+// 按阶段查找
 const buildSkills = findForPhase(graph, 'build');
+// → [frontend-ui-engineering, api-and-interface-design, ...]
 
-// 推荐下一步
-const recs = recommendNext(graph, 'define', '我要写前端界面');
-console.log(recs);
-// [
-//   { skill: frontend-ui-engineering, reason: '...' },
-//   { skill: api-and-interface-design, reason: '...' }
-// ]
+// AI 推荐下一步
+const recs = recommendNext(graph, 'define', '我要开始一个新项目');
+// → [{ skill: planning-and-task-breakdown, reason: '...' }]
 ```
 
 ### React 组件用法
 
 ```tsx
-import { SkillMap, ProjectTracker } from '@agent-skills/react';
-import { createSkillGraph } from '@agent-skills/core';
+import { SkillMap, ProjectTracker, SkillCard } from '@agent-skills/react';
+import '@agent-skills/react/styles';  // 引入样式
 
-const graph = await createSkillGraph('/path/to/skills/');
+// 技能关系图
+<SkillMap
+  graph={graph}
+  currentPhase="plan"
+  width={900}
+  height={600}
+  onSkillClick={(skill) => setSelectedSkill(skill)}
+/>
 
-<SkillMap graph={graph} currentPhase="plan" />
+// 项目阶段追踪
+<ProjectTracker
+  project={projectState}
+  graph={graph}
+  onSkillComplete={(skillId) => handleComplete(skillId)}
+/>
 
-<ProjectTracker project={projectState} graph={graph} />
+// 技能详情弹窗
+{selectedSkill && (
+  <SkillCard skill={selectedSkill} onClose={() => setSelectedSkill(null)} />
+)}
 ```
 
-## 设计原则
+## 技能生命周期
 
-本项目遵循 [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) 的工作流规范：
+```
+Define → Plan → Build → Verify → Review → Ship
+```
 
 | 阶段 | 技能 |
 |------|------|
-| Define | idea-refine, spec-driven-development |
-| Plan | planning-and-task-breakdown, context-engineering |
-| Build | incremental-implementation, frontend-ui-engineering, api-and-interface-design |
-| Verify | test-driven-development, browser-testing-with-devtools, debugging-and-error-recovery |
-| Review | code-review-and-quality, security-and-hardening, performance-optimization |
-| Ship | git-workflow-and-versioning, ci-cd-and-automation, shipping-and-launch |
+| **Define** | idea-refine, spec-driven-development |
+| **Plan** | planning-and-task-breakdown, context-engineering |
+| **Build** | incremental-implementation, frontend-ui-engineering, api-and-interface-design |
+| **Verify** | test-driven-development, browser-testing-with-devtools, debugging-and-error-recovery |
+| **Review** | code-review-and-quality, security-and-hardening, performance-optimization |
+| **Ship** | git-workflow-and-versioning, ci-cd-and-automation, shipping-and-launch |
+
+## 项目结构
+
+```
+agent-skills-dashboard/
+├── packages/
+│   ├── core/                    # TypeScript 数据层
+│   │   ├── src/
+│   │   │   ├── parser.ts        # SKILL.md 解析器
+│   │   │   ├── graph.ts         # 图谱查询 API
+│   │   │   ├── types.ts         # 类型定义
+│   │   │   └── index.ts         # 导出入口
+│   │   └── test/
+│   └── react/                   # React 组件
+│       ├── src/
+│       │   ├── components/
+│       │   │   ├── SkillMap.tsx      # D3 力导向图
+│       │   │   ├── ProjectTracker.tsx # Kanban 阶段面板
+│       │   │   └── SkillCard.tsx     # 技能详情弹窗
+│       │   └── styles.css
+│       └── dist/
+├── pnpm-workspace.yaml
+└── package.json
+```
 
 ## 开发
 
 ```bash
+# 安装依赖
+pnpm install
+
 # 构建全部包
 pnpm build
 
-# 测试
+# 运行测试
 pnpm test
 
-# 监听模式
+# 监听模式开发
 pnpm dev
 ```
+
+## 设计原则
+
+本项目遵循 [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) 的工作流规范，将技能编码为开发过程的每个阶段。
 
 ## License
 

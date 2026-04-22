@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Skills Dashboard — 可视化预览</title>
+  <script src="https://unpkg.com/d3@7/dist/d3.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f9fafb;
+      color: #111827;
+    }
+    header {
+      background: white;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    h1 { font-size: 18px; }
+    .stats {
+      font-size: 13px;
+      color: #6b7280;
+    }
+    #graph {
+      width: 100%;
+      height: calc(100vh - 80px);
+    }
+    .legend {
+      position: absolute;
+      top: 90px;
+      right: 20px;
+      background: white;
+      border-radius: 8px;
+      padding: 12px 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+      font-size: 12px;
+    }
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .tooltip {
+      position: absolute;
+      background: white;
+      border-radius: 8px;
+      padding: 12px 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s;
+      max-width: 300px;
+      z-index: 100;
+    }
+    .tooltip h3 { font-size: 14px; margin-bottom: 4px; }
+    .tooltip p { font-size: 12px; color: #6b7280; }
+    .tooltip .phase { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; margin-top: 6px; }
+    .phase-define { background: #e0e7ff; color: #4338ca; }
+    .phase-plan { background: #ede9fe; color: #7c3aed; }
+    .phase-build { background: #d1fae5; color: #047857; }
+    .phase-verify { background: #fef3c7; color: #b45309; }
+    .phase-review { background: #fee2e2; color: #b91c1c; }
+    .phase-ship { background: #dbeafe; color: #1d4ed8; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🎯 Agent Skills Dashboard</h1>
+    <div class="stats" id="stats">加载中...</div>
+  </header>
+  
+  <svg id="graph"></svg>
+  
+  <div class="legend" id="legend"></div>
+  <div class="tooltip" id="tooltip"></div>
+
+  <script>
+    // 阶段颜色映射
+    const PHASE_COLORS = {
+      define: '#6366f1',
+      plan: '#8b5cf6',
+      build: '#10b981',
+      verify: '#f59e0b',
+      review: '#ef4444',
+      ship: '#3b82f6'
+    };
+    
+    const PHASE_LABELS = {
+      define: 'Define — 定义',
+      plan: 'Plan — 计划',
+      build: 'Build — 构建',
+      verify: 'Verify — 验证',
+      review: 'Review — 评审',
+      ship: 'Ship — 上线'
+    };
+
+    // 从本地文件加载技能数据（这里硬编码示例数据，实际使用时请替换为 API 调用）
+    const SKILLS_DATA = {
+  "nodes": [
+    {
+      "id": "api-and-interface-design",
+      "name": "API and Interface Design",
+      "description": "Guides stable API and interface design. Use when designing APIs, module boundaries, or any public in",
+      "phase": "build"
+    },
+    {
+      "id": "browser-testing-with-devtools",
+      "name": "Browser Testing with DevTools",
+      "description": "Tests in real browsers. Use when building or debugging anything that runs in a browser. Use when you",
+      "phase": "verify"
+    },
+    {
+      "id": "ci-cd-and-automation",
+      "name": "CI/CD and Automation",
+      "description": "Automates CI/CD pipeline setup. Use when setting up or modifying build and deployment pipelines. Use",
+      "phase": "ship"
+    },
+    {
+      "id": "code-review-and-quality",
+      "name": "Code Review and Quality",
+      "description": "Conducts multi-axis code review. Use before merging any change. Use when reviewing code written by y",
+      "phase": "review"
+    },
+    {
+      "id": "code-simplification",
+      "name": "Code Simplification",
+      "description": "Simplifies code for clarity. Use when refactoring code for clarity without changing behavior. Use wh",
+      "phase": "review"
+    },
+    {
+      "id": "context-engineering",
+      "name": "Context Engineering",
+      "description": "Optimizes agent context setup. Use when starting a new session, when agent output quality degrades, ",
+      "phase": "plan"
+    },
+    {
+      "id": "debugging-and-error-recovery",
+      "name": "Debugging and Error Recovery",
+      "description": "Guides systematic root-cause debugging. Use when tests fail, builds break, behavior doesn't match ex",
+      "phase": "verify"
+    },
+    {
+      "id": "deprecation-and-migration",
+      "name": "Deprecation and Migration",
+      "description": "Manages deprecation and migration. Use when removing old systems, APIs, or features. Use when migrat",
+      "phase": "review"
+    },
+    {
+      "id": "documentation-and-adrs",
+      "name": "Documentation and ADRs",
+      "description": "Records decisions and documentation. Use when making architectural decisions, changing public APIs, ",
+      "phase": "ship"
+    },
+    {
+      "id": "frontend-ui-engineering",
+      "name": "Frontend UI Engineering",
+      "description": "Builds production-quality UIs. Use when building or modifying user-facing interfaces. Use when creat",
+      "phase": "build"
+    },
+    {
+      "id": "git-workflow-and-versioning",
+      "name": "Git Workflow and Versioning",
+      "description": "Structures git workflow practices. Use when making any code change. Use when committing, branching, ",
+      "phase": "ship"
+    },
+    {
+      "id": "idea-refine",
+      "name": "Idea Refine",
+      "description": "Refines ideas iteratively. Refine ideas through structured divergent and convergent thinking. Use \"i",
+      "phase": "define"
+    },
+    {
+      "id": "incremental-implementation",
+      "name": "Incremental Implementation",
+      "description": "Delivers changes incrementally. Use when implementing any feature or change that touches more than o",
+      "phase": "build"
+    },
+    {
+      "id": "performance-optimization",
+      "name": "Performance Optimization",
+      "description": "Optimizes application performance. Use when performance requirements exist, when you suspect perform",
+      "phase": "review"
+    },
+    {
+      "id": "planning-and-task-breakdown",
+      "name": "Planning and Task Breakdown",
+      "description": "Breaks work into ordered tasks. Use when you have a spec or clear requirements and need to break wor",
+      "phase": "plan"
+    },
+    {
+      "id": "security-and-hardening",
+      "name": "Security and Hardening",
+      "description": "Hardens code against vulnerabilities. Use when handling user input, authentication, data storage, or",
+      "phase": "review"
+    },
+    {
+      "id": "shipping-and-launch",
+      "name": "Shipping and Launch",
+      "description": "Prepares production launches. Use when preparing to deploy to production. Use when you need a pre-la",
+      "phase": "ship"
+    },
+    {
+      "id": "source-driven-development",
+      "name": "Source-Driven Development",
+      "description": "Grounds every implementation decision in official documentation. Use when you want authoritative, so",
+      "phase": "build"
+    },
+    {
+      "id": "spec-driven-development",
+      "name": "Spec-Driven Development",
+      "description": "Creates specs before coding. Use when starting a new project, feature, or significant change and no ",
+      "phase": "define"
+    },
+    {
+      "id": "test-driven-development",
+      "name": "Test-Driven Development",
+      "description": "Drives development with tests. Use when implementing any logic, fixing any bug, or changing any beha",
+      "phase": "verify"
+    },
+    {
+      "id": "using-agent-skills",
+      "name": "Using Agent Skills",
+      "description": "Discovers and invokes agent skills. Use when starting a session or when you need to discover which s",
+      "phase": "define"
+    }
+  ],
+  "edges": [
+    {
+      "source": "api-and-interface-design",
+      "target": "browser-testing-with-devtools"
+    },
+    {
+      "source": "api-and-interface-design",
+      "target": "ci-cd-and-automation"
+    },
+    {
+      "source": "api-and-interface-design",
+      "target": "code-review-and-quality"
+    },
+    {
+      "source": "api-and-interface-design",
+      "target": "code-simplification"
+    },
+    {
+      "source": "api-and-interface-design",
+      "target": "debugging-and-error-recovery"
+    },
+    {
+      "source": "api-and-interface-design",
+      "target": "deprecation-and-migration"
+    },
+    {
+      "source": "api-and-interface-design",
+      "target": "documentation-and-adrs"
+    },
+    {
+      "source": "api-and-interface-design",
+      "target": "git-workflow-and-versioning"
+    },
+    {
+      "source": "api-and-interface-design",
+      "target": "performance-optimization"
+    },
+    {
+      "source": "api-and-interface-design",
+      "target": "security-and-hardening"
+    },
+    {
+      "source": "api-and-interface-design",
+      "target": "shipping-and-launch"
+    },
+    {
+      "source": "api-and-interface-design",
+      "target": "test-driven-development"
+    },
+    {
+      "source": "browser-testing-with-devtools",
+      "target": "ci-cd-and-automation"
+    },
+    {
+      "source": "browser-testing-with-devtools",
+      "target": "code-review-and-quality"
+    },
+    {
+      "source": "browser-testing-with-devtools",
+      "target": "code-simplification"
+    },
+    {
+      "source": "browser-testing-with-devtools",
+      "target": "deprecation-and-migration"
+    },
+    {
+      "source": "browser-testing-with-devtools",
+      "target": "documentation-and-adrs"
+    },
+    {
+      "source": "browser-testing-with-devtools",
+      "target": "git-workflow-and-versioning"
+    },
+    {
+      "source": "browser-testing-with-devtools",
+      "target": "performance-optimization"
+    },
+    {
+      "source": "browser-testing-with-devtools",
+      "target": "security-and-hardening"
+    },
+    {
+      "source": "browser-testing-with-devtools",
+      "target": "shipping-and-launch"
+    },
+    {
+      "source": "code-review-and-quality",
+      "target": "documentation-and-adrs"
+    },
+    {
+      "source": "code-review-and-quality",
+      "target": "git-workflow-and-versioning"
+    },
+    {
+      "source": "code-review-and-quality",
+      "target": "shipping-and-launch"
+    },
+    {
+      "source": "code-simplification",
+      "target": "documentation-and-adrs"
+    },
+    {
+      "source": "code-simplification",
+      "target": "git-workflow-and-versioning"
+    },
+    {
+      "source": "code-simplification",
+      "target": "shipping-and-launch"
+    },
+    {
+      "source": "context-engineering",
+      "target": "debugging-and-error-recovery"
+    },
+    {
+      "source": "context-engineering",
+      "target": "deprecation-and-migration"
+    },
+    {
+      "source": "context-engineering",
+      "target": "documentation-and-adrs"
+    },
+    {
+      "source": "context-engineering",
+      "target": "frontend-ui-engineering"
+    },
+    {
+      "source": "context-engineering",
+      "target": "git-workflow-and-versioning"
+    },
+    {
+      "source": "context-engineering",
+      "target": "incremental-implementation"
+    },
+    {
+      "source": "context-engineering",
+      "target": "performance-optimization"
+    },
+    {
+      "source": "context-engineering",
+      "target": "security-and-hardening"
+    },
+    {
+      "source": "context-engineering",
+      "target": "shipping-and-launch"
+    },
+    {
+      "source": "context-engineering",
+      "target": "source-driven-development"
+    },
+    {
+      "source": "context-engineering",
+      "target": "test-driven-development"
+    },
+    {
+      "source": "debugging-and-error-recovery",
+      "target": "deprecation-and-migration"
+    },
+    {
+      "source": "debugging-and-error-recovery",
+      "target": "documentation-and-adrs"
+    },
+    {
+      "source": "debugging-and-error-recovery",
+      "target": "git-workflow-and-versioning"
+    },
+    {
+      "source": "debugging-and-error-recovery",
+      "target": "performance-optimization"
+    },
+    {
+      "source": "debugging-and-error-recovery",
+      "target": "security-and-hardening"
+    },
+    {
+      "source": "debugging-and-error-recovery",
+      "target": "shipping-and-launch"
+    },
+    {
+      "source": "deprecation-and-migration",
+      "target": "documentation-and-adrs"
+    },
+    {
+      "source": "deprecation-and-migration",
+      "target": "git-workflow-and-versioning"
+    },
+    {
+      "source": "deprecation-and-migration",
+      "target": "shipping-and-launch"
+    },
+    {
+      "source": "frontend-ui-engineering",
+      "target": "git-workflow-and-versioning"
+    },
+    {
+      "source": "frontend-ui-engineering",
+      "target": "performance-optimization"
+    },
+    {
+      "source": "frontend-ui-engineering",
+      "target": "security-and-hardening"
+    },
+    {
+      "source": "frontend-ui-engineering",
+      "target": "shipping-and-launch"
+    },
+    {
+      "source": "frontend-ui-engineering",
+      "target": "test-driven-development"
+    },
+    {
+      "source": "idea-refine",
+      "target": "incremental-implementation"
+    },
+    {
+      "source": "idea-refine",
+      "target": "performance-optimization"
+    },
+    {
+      "source": "idea-refine",
+      "target": "planning-and-task-breakdown"
+    },
+    {
+      "source": "idea-refine",
+      "target": "security-and-hardening"
+    },
+    {
+      "source": "idea-refine",
+      "target": "shipping-and-launch"
+    },
+    {
+      "source": "idea-refine",
+      "target": "source-driven-development"
+    },
+    {
+      "source": "idea-refine",
+      "target": "test-driven-development"
+    },
+    {
+      "source": "incremental-implementation",
+      "target": "performance-optimization"
+    },
+    {
+      "source": "incremental-implementation",
+      "target": "security-and-hardening"
+    },
+    {
+      "source": "incremental-implementation",
+      "target": "shipping-and-launch"
+    },
+    {
+      "source": "incremental-implementation",
+      "target": "test-driven-development"
+    },
+    {
+      "source": "performance-optimization",
+      "target": "shipping-and-launch"
+    },
+    {
+      "source": "planning-and-task-breakdown",
+      "target": "security-and-hardening"
+    },
+    {
+      "source": "planning-and-task-breakdown",
+      "target": "shipping-and-launch"
+    },
+    {
+      "source": "planning-and-task-breakdown",
+      "target": "source-driven-development"
+    },
+    {
+      "source": "planning-and-task-breakdown",
+      "target": "test-driven-development"
+    },
+    {
+      "source": "security-and-hardening",
+      "target": "shipping-and-launch"
+    },
+    {
+      "source": "source-driven-development",
+      "target": "test-driven-development"
+    },
+    {
+      "source": "spec-driven-development",
+      "target": "test-driven-development"
+    }
+  ]
+};
+
+    const width = window.innerWidth;
+    const height = window.innerHeight - 80;
+
+    const svg = d3.select('#graph')
+      .attr('width', width)
+      .attr('height', height);
+
+    // 图例
+    const legend = d3.select('#legend');
+    Object.entries(PHASE_LABELS).forEach(([phase, label]) => {
+      legend.append('div')
+        .attr('class', 'legend-item')
+        .html(`<div class="legend-dot" style="background:${PHASE_COLORS[phase]}"></div><span>${label}</span>`);
+    });
+
+    document.getElementById('stats').textContent = `共 ${SKILLS_DATA.nodes.length} 个技能 · ${SKILLS_DATA.edges.length} 条关系`;
+
+    // 创建力导向图
+    const simulation = d3.forceSimulation(SKILLS_DATA.nodes)
+      .force('link', d3.forceLink(SKILLS_DATA.edges).id(d => d.id).distance(150))
+      .force('charge', d3.forceManyBody().strength(-500))
+      .force('center', d3.forceCenter(width / 2, height / 2))
+      .force('x', d3.forceX(width / 2).strength(0.03))
+      .force('y', d3.forceY(height / 2).strength(0.03));
+
+    // 连线
+    const link = svg.append('g')
+      .selectAll('line')
+      .data(SKILLS_DATA.edges)
+      .join('line')
+      .attr('stroke', '#e5e7eb')
+      .attr('stroke-width', 1.5)
+      .attr('stroke-opacity', 0.6);
+
+    // 节点组
+    const node = svg.append('g')
+      .selectAll('g')
+      .data(SKILLS_DATA.nodes)
+      .join('g')
+      .attr('cursor', 'pointer')
+      .call(d3.drag()
+        .on('start', (event, d) => {
+          if (!event.active) simulation.alphaTarget(0.3).restart();
+          d.fx = d.x;
+          d.fy = d.y;
+        })
+        .on('drag', (event, d) => {
+          d.fx = event.x;
+          d.fy = event.y;
+        })
+        .on('end', (event, d) => {
+          if (!event.active) simulation.alphaTarget(0);
+          d.fx = null;
+          d.fy = null;
+        })
+      );
+
+    // 节点圆圈
+    node.append('circle')
+      .attr('r', 12)
+      .attr('fill', d => PHASE_COLORS[d.phase] || '#9ca3af')
+      .attr('stroke', 'white')
+      .attr('stroke-width', 2)
+      .attr('opacity', 0.9);
+
+    // 节点文字
+    node.append('text')
+      .text(d => d.name.length > 14 ? d.name.substring(0, 12) + '…' : d.name)
+      .attr('text-anchor', 'middle')
+      .attr('dy', 24)
+      .attr('font-size', 10)
+      .attr('fill', '#6b7280');
+
+    // Tooltip
+    const tooltip = document.getElementById('tooltip');
+    node.on('mouseover', (event, d) => {
+      tooltip.style.opacity = '1';
+      tooltip.innerHTML = `
+        <h3>${d.name}</h3>
+        <p>${d.description || '暂无描述'}</p>
+        <span class="phase phase-${d.phase}">${d.phase}</span>
+      `;
+    })
+    .on('mousemove', (event) => {
+      tooltip.style.left = (event.pageX + 15) + 'px';
+      tooltip.style.top = (event.pageY - 10) + 'px';
+    })
+    .on('mouseout', () => {
+      tooltip.style.opacity = '0';
+    });
+
+    // 更新位置
+    simulation.on('tick', () => {
+      link
+        .attr('x1', d => d.source.x)
+        .attr('y1', d => d.source.y)
+        .attr('x2', d => d.target.x)
+        .attr('y2', d => d.target.y);
+      node.attr('transform', d => `translate(${d.x},${d.y})`);
+    });
+  </script>
+</body>
+</html>
