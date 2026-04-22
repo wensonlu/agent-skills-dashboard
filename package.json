@@ -1,0 +1,14 @@
+{
+  "name": "agent-skills-dashboard",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AI Coding Skills Visualization Dashboard - AI Agent oriented monorepo",
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "dev": "pnpm -r --parallel dev"
+  },
+  "keywords": ["agent-skills", "claude-code", "ai-coding", "skills-dashboard"],
+  "license": "MIT",
+  "packageManager": "pnpm@9.0.0"
+}
