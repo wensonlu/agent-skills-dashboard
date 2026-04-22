@@ -23,19 +23,19 @@ jobs:
         run: npm install -g pnpm@9
 
       - name: Install dependencies
-        run: npx pnpm install --frozen-lockfile
+        run: npm exec -- pnpm install --frozen-lockfile
 
       - name: Build core package
-        run: npx pnpm --filter @agent-skills/core build
+        run: npm exec -- pnpm --filter @agent-skills/core build
 
       - name: Build react package
-        run: npx pnpm --filter @agent-skills/react build
+        run: npm exec -- pnpm --filter @agent-skills/react build
 
       - name: TypeScript check
-        run: npx pnpm -r exec tsc --noEmit || true
+        run: npm exec -- pnpm -r exec tsc --noEmit || true
 
       - name: Run tests
-        run: npx pnpm test
+        run: npm exec -- pnpm test
 
       - name: Build demo page
-        run: npx tsx scripts/generate-demo-data.ts
+        run: npm exec -- pnpm tsx scripts/generate-demo-data.ts

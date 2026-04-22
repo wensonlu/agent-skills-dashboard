@@ -26,10 +26,10 @@ jobs:
         run: npm install -g pnpm@9
 
       - name: Install dependencies
-        run: npx pnpm install --frozen-lockfile
+        run: npm exec -- pnpm install --frozen-lockfile
 
       - name: Generate demo data
-        run: npx tsx scripts/generate-demo-data.ts
+        run: npm exec -- pnpm tsx scripts/generate-demo-data.ts
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
