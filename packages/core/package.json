@@ -1,8 +1,27 @@
 {
   "name": "@agent-skills-dashboard/core",
-  "version": "0.1.0",
+  "version": "0.1.8",
   "private": false,
-  "description": "TypeScript data parsing layer for Agent Skills graph",
+  "description": "Parse SKILL.md files into an Agent Skills graph and recommend next-step skills for AI coding workflows.",
+  "keywords": [
+    "agent-skills",
+    "ai-coding",
+    "skill-graph",
+    "workflow",
+    "typescript"
+  ],
+  "homepage": "https://github.com/wensonlu/agent-skills-dashboard#readme",
+  "bugs": {
+    "url": "https://github.com/wensonlu/agent-skills-dashboard/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wensonlu/agent-skills-dashboard.git",
+    "directory": "packages/core"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
