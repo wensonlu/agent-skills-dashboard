@@ -1,5 +1,5 @@
 {
-  "name": "@wenson1234/react",
+  "name": "@agent-skills-dashboard/react",
   "version": "0.1.0",
   "private": false,
   "description": "React components for Agent Skills visualization",
@@ -26,13 +26,13 @@
     "react-dom": "^18.0.0"
   },
   "dependencies": {
-    "@wenson1234/core": "workspace:*",
+    "@agent-skills-dashboard/core": "workspace:*",
     "d3": "^7.9.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.0",
     "@types/d3": "^7.4.3",
-    "@wenson1234/core": "workspace:*",
+    "@agent-skills-dashboard/core": "workspace:*",
     "tsup": "^8.0.0",
     "typescript": "^5.4.0",
     "vitest": "^1.0.0"

@@ -16,8 +16,8 @@
 
 | 包 | 说明 |
 |----|------|
-| `@wenson1234/core` | TypeScript 纯数据解析层，无 UI 依赖 |
-| `@wenson1234/react` | React 组件层，可选 import |
+| `@agent-skills-dashboard/core` | TypeScript 纯数据解析层，无 UI 依赖 |
+| `@agent-skills-dashboard/react` | React 组件层，可选 import |
 
 **理由：**
 - AI 需要轻量数据查询接口，UI 是附加能力
@@ -38,7 +38,7 @@
 
 ## 4. 包设计
 
-### 4.1 `@wenson1234/core`
+### 4.1 `@agent-skills-dashboard/core`
 
 #### 数据结构
 
@@ -91,7 +91,7 @@ function updateProjectState(state: ProjectState, completedSkill: string): Projec
 function getBlockedSkills(state: ProjectState): SkillNode[];
 ```
 
-### 4.2 `@wenson1234/react`
+### 4.2 `@agent-skills-dashboard/react`
 
 #### 组件
 
