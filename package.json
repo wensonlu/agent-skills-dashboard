@@ -7,8 +7,7 @@
     "build": "pnpm -r build",
     "build:demo": "pnpm tsx scripts/generate-demo-data.ts",
     "test": "pnpm -r test",
-    "dev": "pnpm -r --parallel dev",
-    "release": "pnpm build && pnpm -r --no-git-checks publish --access public"
+    "dev": "pnpm -r --parallel dev"
   },
   "keywords": [
     "agent-skills",

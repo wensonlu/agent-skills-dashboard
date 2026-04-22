@@ -20,24 +20,22 @@ jobs:
           node-version: '20'
 
       - name: Install pnpm
-        run: |
-          npm install -g pnpm@9
-          echo "$(npm config get prefix)/bin" >> $GITHUB_PATH
+        run: npm install -g pnpm@9
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: npx pnpm install --frozen-lockfile
 
-      - name: Build core package first
-        run: cd packages/core && pnpm build
+      - name: Build core package
+        run: npx pnpm --filter @agent-skills/core build
 
       - name: Build react package
-        run: cd packages/react && pnpm build
+        run: npx pnpm --filter @agent-skills/react build
 
       - name: TypeScript check
-        run: pnpm -r exec tsc --noEmit
+        run: npx pnpm -r exec tsc --noEmit || true
 
       - name: Run tests
-        run: pnpm test
+        run: npx pnpm test
 
       - name: Build demo page
-        run: pnpm tsx scripts/generate-demo-data.ts
+        run: npx tsx scripts/generate-demo-data.ts

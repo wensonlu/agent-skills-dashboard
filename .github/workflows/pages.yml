@@ -23,15 +23,13 @@ jobs:
           node-version: '20'
 
       - name: Install pnpm
-        run: |
-          npm install -g pnpm@9
-          echo "$(npm config get prefix)/bin" >> $GITHUB_PATH
+        run: npm install -g pnpm@9
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: npx pnpm install --frozen-lockfile
 
       - name: Generate demo data
-        run: pnpm tsx scripts/generate-demo-data.ts
+        run: npx tsx scripts/generate-demo-data.ts
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
